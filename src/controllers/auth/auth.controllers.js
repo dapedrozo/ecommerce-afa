@@ -5,7 +5,7 @@ import { passportAuth } from "../../middlewares/index.js";
 export const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userFound = await prisma.product.findFirst({
+    const userFound = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -25,7 +25,7 @@ export const signIn = async (req, res) => {
     const jtiToken = passportAuth.decodeToken(token);
     if (!jtiToken)
       return res.status(400).json({ token: null, message: "ocurrio un error" });
-    await prisma.tokensWhitelist.create({
+    await prisma.tokenWhitelist.create({
       data: {
         jtiToken,
         lastActivity,
@@ -70,7 +70,7 @@ export const logout = async (req, res) => {
     const jtiToken = passportAuth.decodeToken(token);
     if (!jtiToken)
       return res.status(400).json({ token: null, message: "ocurrio un error" });
-    const deletedToken = await prisma.tokensWhitelist.delete({
+    const deletedToken = await prisma.tokenWhitelist.delete({
       where: {
         jti: jtiToken,
       },

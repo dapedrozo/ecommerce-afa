@@ -15,7 +15,7 @@ const jwtOptions = {
 passport.use(
     new JwtStrategy(jwtOptions, async (payload, done) => {
       try {
-        const validToken = await prisma.TokenWhitelist.findFirst({
+        const validToken = await prisma.tokenWhitelist.findFirst({
             where: {
                 jti: payload.jti
             },
@@ -28,8 +28,8 @@ passport.use(
         const difference = currentTime - validToken.lastActivity;
         const fiveteenMin = 15 * 60 * 1000;
         if (difference >= fiveteenMin) {
-          await TokensWhitelist.findOneAndDelete({ jtiToken: payload.jti });
-          await prisma.TokenWhitelist.delete({
+          await tokenWhitelist.findOneAndDelete({ jtiToken: payload.jti });
+          await prisma.tokenWhitelist.delete({
             where:{
                 jti: payload.jti
             }
@@ -37,7 +37,7 @@ passport.use(
           done(null, false);
           return;
         }
-        await prisma.TokensWhitelist.update({
+        await prisma.tokenWhitelist.update({
             where:{
                 jti: payload.jti
             },

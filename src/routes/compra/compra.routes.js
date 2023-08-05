@@ -4,6 +4,6 @@ import {passportAuth} from '../../middlewares/index.js'
 
 const router = Router()
 
-router.get('/', passportAuth.authenticateJwt, compraController.getPerfil)
+router.get('/', passportAuth.authenticateJwt, compraController.realizarCompra)
 
 export default router
