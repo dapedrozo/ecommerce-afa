@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  email          String           @unique
+  name           String
+  direccion      String?
+  image          String?
+  password       String
+  carritos       Carrito[]
+  tokenWhitelist TokenWhitelist[]
+}
+
+model Product {
+  name              String       @id
+  price             Int          @default(100)
+  codigo            String
+  stock             Int          @default(1)
+  descripcionExtras Json
+  createdAt         DateTime     @default(now())
+  category          Category     @relation(fields: [categoryId], references: [name])
+  categoryId        String
+  distribuidor      Distribuidor @relation(fields: [distribuidorId], references: [name])
+  distribuidorId    String
+  carritos          Carrito[]
+}
+
+model Distribuidor {
+  name      String    @id
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Carrito {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [email])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [name])
+  productId String
+  cantidad             Int          @default(1) 
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  name     String    @id
+  products Product[]
+}
+
+model TokenWhitelist {
+  jti          String   @id
+  lastActivity DateTime
+  user         User     @relation(fields: [userId], references: [email])
+  userId       String
+}
