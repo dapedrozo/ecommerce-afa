@@ -19,7 +19,6 @@ export const signIn = async (req, res) => {
       return res
         .status(400)
         .json({ token: null, message: "usuario no encontrado" });
-
     const token = passportAuth.generateToken(userFound);
     const lastActivity = new Date();
     const jtiToken = passportAuth.decodeToken(token);
@@ -27,9 +26,9 @@ export const signIn = async (req, res) => {
       return res.status(400).json({ token: null, message: "ocurrio un error" });
     await prisma.tokenWhitelist.create({
       data: {
-        jtiToken,
+        jti:jtiToken,
         lastActivity,
-        userId: userFound.email,
+        userId: email,
       },
     });
     res.status(200).json(token);

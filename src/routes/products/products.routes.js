@@ -4,7 +4,7 @@ import {passportAuth} from '../../middlewares/index.js'
 
 const router = Router()
 
-router.post('/', passportAuth.authenticateJwt, productsController.getProducts)
+router.get('/', passportAuth.authenticateJwt, productsController.getProducts)
 router.get('/:name', passportAuth.authenticateJwt, productsController.getProduct)
 
 export default router
